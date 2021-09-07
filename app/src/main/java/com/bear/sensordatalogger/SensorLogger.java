@@ -23,23 +23,18 @@ import java.util.List;
 public class SensorLogger implements SensorEventListener2 {
 
     SensorManager   _sensorManager;
-    String          _logFileName;
     FileWriter      _logWriter;
     boolean         _isRecording;
-    Context         _context;
 
     SensorLogger(Context context)
     {
-        _context = context;
-        _sensorManager = (SensorManager) _context.getSystemService(SENSOR_SERVICE);
+        _sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
     }
 
     public void startLogger(String logFileName)
     {
-        _logFileName = logFileName;
-
         try {
-            _logWriter = new FileWriter(new File(_logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+            _logWriter = new FileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
         } catch (IOException e) {
             e.printStackTrace();
         }
