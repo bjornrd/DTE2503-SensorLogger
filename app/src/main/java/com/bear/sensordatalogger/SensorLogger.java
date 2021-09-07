@@ -22,21 +22,16 @@ import java.util.List;
 
 public class SensorLogger implements SensorEventListener2 {
 
-    List<Sensor> _sensors;
-    SensorManager _sensorManager;
-    String _logFileName;
-    FileWriter _logWriter;
-    boolean _isRecording;
-    Context _context;
-    int _sampleRate;
+    SensorManager   _sensorManager;
+    String          _logFileName;
+    FileWriter      _logWriter;
+    boolean         _isRecording;
+    Context         _context;
 
     SensorLogger(Context context)
     {
         _context = context;
         _sensorManager = (SensorManager) _context.getSystemService(SENSOR_SERVICE);
-        _sensors = _sensorManager.getSensorList(Sensor.TYPE_ALL);
-
-        _sampleRate = 50;
     }
 
     public void startLogger(String logFileName)
@@ -70,16 +65,16 @@ public class SensorLogger implements SensorEventListener2 {
 
     private void registerListeners()
     {
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY), _sensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR), _sensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),       SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),             SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),           SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),               SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT),       SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),            SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY),   SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),           SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),       SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -137,13 +132,8 @@ public class SensorLogger implements SensorEventListener2 {
 
     }
 
-    public List<String> listSensors()
+    public boolean isRecording()
     {
-        List<String> sensorList = new ArrayList<>();
-
-        for(Sensor sensor:_sensors)
-            sensorList.add(sensor.toString());
-
-        return sensorList;
+        return _isRecording;
     }
 }

@@ -9,7 +9,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean _isRecording;
     private SensorLogger _logger;
 
     @Override
@@ -17,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _isRecording = false;
 
         Context context = getApplicationContext();
         _logger = new SensorLogger(context);
@@ -28,16 +26,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
 
-            if(_isRecording) // Stop Recording
+            if(_logger.isRecording()) // Stop Recording
             {
                 button.setText(getString(R.string.start_recording));
-                _isRecording = false;
 
                 _logger.stopLogger();
 
             } else { // Start Recording
                 button.setText(getString(R.string.stop_recording));
-                _isRecording = true;
 
                 _logger.startLogger(getStorageDir());
             }
