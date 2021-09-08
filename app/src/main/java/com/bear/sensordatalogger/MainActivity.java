@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private String getStorageDir() {
+    private String getStorageDir()
+    {
         return this.getExternalFilesDir(null).getAbsolutePath();
     }
 }
