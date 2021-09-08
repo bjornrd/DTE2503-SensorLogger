@@ -3,9 +3,12 @@ package com.bear.sensordatalogger;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.EnumSet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +38,14 @@ public class MainActivity extends AppCompatActivity {
             } else { // Start Recording
                 button.setText(getString(R.string.stop_recording));
 
-                _logger.startLogger(getStorageDir());
+                _logger.setSensorDelay(SensorManager.SENSOR_DELAY_UI);
+                _logger.startLogger(getStorageDir(), SensorLogger.SensorType.all, SensorLogger.ReportingMode.all);
+
+//                _logger.setLowPowerMode(true);
+//                _logger.setSensorDelay(SensorManager.SENSOR_DELAY_NORMAL);
+//                _logger.startLogger(getStorageDir(),
+//                                    EnumSet.of(SensorLogger.SensorType.base),
+//                                    EnumSet.of(SensorLogger.ReportingMode.continuous, SensorLogger.ReportingMode.onChange));
             }
         }
         });
