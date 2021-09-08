@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             } else { // Start Recording
                 button.setText(getString(R.string.stop_recording));
 
-                _logger.setSensorDelay(SensorManager.SENSOR_DELAY_UI);
+                _logger.setSensorDelay(SensorManager.SENSOR_DELAY_NORMAL);
                 _logger.startLogger(getStorageDir(), SensorLogger.SensorType.all, SensorLogger.ReportingMode.all);
 
 //                _logger.setLowPowerMode(true);

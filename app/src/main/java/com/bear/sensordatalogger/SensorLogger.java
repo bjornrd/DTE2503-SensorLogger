@@ -176,7 +176,7 @@ public class SensorLogger implements SensorEventListener2 {
         if(_isRecording) {
             try {
 
-                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
                 switch (sensorEvent.sensor.getType()) {
                     case Sensor.TYPE_ACCELEROMETER:
                         writeSensorEvent("Accelerometer",               timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
@@ -206,7 +206,7 @@ public class SensorLogger implements SensorEventListener2 {
                         writeSensorEvent("Relative Humidity",           timestamp, sensorEvent, sensorEvent.values[0]);
                         break;
                     case Sensor.TYPE_LINEAR_ACCELERATION:
-                        writeSensorEvent("Linaer Acceleration",         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                        writeSensorEvent("Linear Acceleration",         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                         break;
                     case Sensor.TYPE_ROTATION_VECTOR:
                         writeSensorEvent("Rotation Vector",             timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
