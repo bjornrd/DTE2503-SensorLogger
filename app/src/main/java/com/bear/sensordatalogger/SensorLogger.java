@@ -23,10 +23,12 @@ public class SensorLogger implements SensorEventListener2 {
     SensorManager   _sensorManager;
     FileWriter      _logWriter;
     boolean         _isRecording;
+    int             _sensorDelay;
 
     SensorLogger(Context context)
     {
         _sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        _sensorDelay = SensorManager.SENSOR_DELAY_UI;
     }
 
     public void startLogger(String logFileName)
@@ -59,17 +61,16 @@ public class SensorLogger implements SensorEventListener2 {
 
     private void registerListeners()
     {
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),       SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),             SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),           SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),               SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT),       SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),            SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY),   SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),           SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),       SensorManager.SENSOR_DELAY_GAME);
-        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),     SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),       _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),             _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),           _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),               _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT),       _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),            _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY),   _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),       _sensorDelay);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),     _sensorDelay);
     }
 
     @Override
@@ -111,9 +112,6 @@ public class SensorLogger implements SensorEventListener2 {
                         break;
                     case Sensor.TYPE_RELATIVE_HUMIDITY:
                         _logWriter.write(String.format("%s; %d; Relative Humidity; %f; %f; %f\n",       timestamp, sensorEvent.timestamp, sensorEvent.values[0], 0.f, 0.f));
-                        break;
-                    case Sensor.TYPE_PROXIMITY:
-                        _logWriter.write(String.format("%s; %d; Proximity Sensor; %f; %f; %f\n",        timestamp, sensorEvent.timestamp, sensorEvent.values[0], 0.f, 0.f));
                         break;
                     case Sensor.TYPE_ROTATION_VECTOR:
                         _logWriter.write(String.format("%s; %d; Rotation Sensor; %f; %f; %f\n",         timestamp, sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]));
