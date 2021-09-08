@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 // Inspired by: https://github.com/ejoebstl/Android-Sensor-Log
@@ -35,6 +33,7 @@ public class SensorLogger implements SensorEventListener2 {
     {
         try {
             _logWriter = new FileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,6 +69,7 @@ public class SensorLogger implements SensorEventListener2 {
         _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY),   SensorManager.SENSOR_DELAY_GAME);
         _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),           SensorManager.SENSOR_DELAY_GAME);
         _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),       SensorManager.SENSOR_DELAY_GAME);
+        _sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),     SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -115,7 +115,11 @@ public class SensorLogger implements SensorEventListener2 {
                     case Sensor.TYPE_PROXIMITY:
                         _logWriter.write(String.format("%s; %d; Proximity Sensor; %f; %f; %f\n",        timestamp, sensorEvent.timestamp, sensorEvent.values[0], 0.f, 0.f));
                         break;
+                    case Sensor.TYPE_ROTATION_VECTOR:
+                        _logWriter.write(String.format("%s; %d; Rotation Sensor; %f; %f; %f\n",         timestamp, sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]));
+
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
