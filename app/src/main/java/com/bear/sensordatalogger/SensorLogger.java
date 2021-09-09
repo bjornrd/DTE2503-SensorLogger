@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enumsets-in-java/
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 // Inspired by: https://github.com/ejoebstl/Android-Sensor-Log
@@ -24,6 +26,7 @@ import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enums
 //
 
 public class SensorLogger implements SensorEventListener2 {
+    AtomicBoolean _writerIsOpen; // To assure that the _logWriter is open when executing write-AsyncTask - Pretty hacky solution...
 
     private final SensorManager _sensorManager;
     private FileWriter          _logWriter;
@@ -54,12 +57,14 @@ public class SensorLogger implements SensorEventListener2 {
         _sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         _sensorDelay = SensorManager.SENSOR_DELAY_UI;
         _lowPowerMode = false;
+        _writerIsOpen = new AtomicBoolean(false);
     }
 
     public void startLogger(String logFileName, EnumSet<SensorType> sensorType, EnumSet<ReportingMode> mode)
     {
         try {
             _logWriter = new FileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+            _writerIsOpen.set(true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,7 +95,9 @@ public class SensorLogger implements SensorEventListener2 {
         _sensorManager.unregisterListener(this);
 
         try {
+            _writerIsOpen.set(false);
             _logWriter.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -179,80 +186,17 @@ public class SensorLogger implements SensorEventListener2 {
 
     }
 
-    @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) { //TODO: Run work in async background task
-        if(_isRecording) {
-            try {
-
-                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
-                switch (sensorEvent.sensor.getType()) {
-                    case Sensor.TYPE_ACCELEROMETER:
-                        writeSensorEvent("Accelerometer",               timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_MAGNETIC_FIELD:
-                        writeSensorEvent("Magnetic Field",              timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_GYROSCOPE:
-                        writeSensorEvent("Gyroscope",                   timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_PRESSURE:
-                        writeSensorEvent("Pressure",                    timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                        writeSensorEvent("Ambient Temperature",         timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_HEART_RATE:
-                        writeSensorEvent("Heart Rate",                  timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_LIGHT:
-                        writeSensorEvent("Light Level",                 timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_PROXIMITY:
-                        writeSensorEvent("Proximity Distance",          timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_RELATIVE_HUMIDITY:
-                        writeSensorEvent("Relative Humidity",           timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_LINEAR_ACCELERATION:
-                        writeSensorEvent("Linear Acceleration",         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_ROTATION_VECTOR:
-                        writeSensorEvent("Rotation Vector",             timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_GAME_ROTATION_VECTOR:
-                        writeSensorEvent("Game Rotation Vector",        timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_GRAVITY:
-                        writeSensorEvent("Gravity",                     timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
-                        writeSensorEvent("Geomagnetic Rotation Vector", timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-                        break;
-                    case Sensor.TYPE_STEP_COUNTER:
-                        writeSensorEvent("Step Counter",                timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_SIGNIFICANT_MOTION:
-                        writeSensorEvent("Significant Motion",          timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case Sensor.TYPE_STEP_DETECTOR:
-                        writeSensorEvent("Step Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                    case TYPE_TILT_DETECTOR:
-                        writeSensorEvent("Tilt Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
-                        break;
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public void onSensorChanged(SensorEvent sensorEvent)
+    {
+        new SensorEventLoggerTask().execute(sensorEvent);
     }
 
     @SuppressLint("DefaultLocale")
     private void writeSensorEvent(String descriptor, String timestamp, SensorEvent sensorEvent, float val1, float val2, float val3) throws IOException
     {
-        _logWriter.write(String.format("%s; %s; %d; %f; %f; %f\n", descriptor, timestamp, sensorEvent.timestamp, val1, val2, val3));
+        if(_writerIsOpen.get())
+            _logWriter.write(String.format("%s; %s; %d; %f; %f; %f\n", descriptor, timestamp, sensorEvent.timestamp, val1, val2, val3));
     }
 
     private void writeSensorEvent(String descriptor, String timestamp, SensorEvent sensorEvent, float val1, float val2) throws IOException
@@ -317,4 +261,86 @@ public class SensorLogger implements SensorEventListener2 {
                 break;
         }
     }
+
+    // Ignoring warning: https://stackoverflow.com/a/46166223
+    private class SensorEventLoggerTask extends AsyncTask<SensorEvent, Void, Void>
+    {
+
+        @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
+        @Override
+        protected Void doInBackground(SensorEvent... sensorEvents) {
+            SensorEvent sensorEvent = sensorEvents[0];
+
+            if(_isRecording) {
+                try {
+
+                    String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
+                    switch (sensorEvent.sensor.getType()) {
+                        case Sensor.TYPE_ACCELEROMETER:
+                            writeSensorEvent("Accelerometer",               timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_MAGNETIC_FIELD:
+                            writeSensorEvent("Magnetic Field",              timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_GYROSCOPE:
+                            writeSensorEvent("Gyroscope",                   timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_PRESSURE:
+                            writeSensorEvent("Pressure",                    timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                            writeSensorEvent("Ambient Temperature",         timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_HEART_RATE:
+                            writeSensorEvent("Heart Rate",                  timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_LIGHT:
+                            writeSensorEvent("Light Level",                 timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_PROXIMITY:
+                            writeSensorEvent("Proximity Distance",          timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_RELATIVE_HUMIDITY:
+                            writeSensorEvent("Relative Humidity",           timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            writeSensorEvent("Linear Acceleration",         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_ROTATION_VECTOR:
+                            writeSensorEvent("Rotation Vector",             timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_GAME_ROTATION_VECTOR:
+                            writeSensorEvent("Game Rotation Vector",        timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_GRAVITY:
+                            writeSensorEvent("Gravity",                     timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
+                            writeSensorEvent("Geomagnetic Rotation Vector", timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            break;
+                        case Sensor.TYPE_STEP_COUNTER:
+                            writeSensorEvent("Step Counter",                timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_SIGNIFICANT_MOTION:
+                            writeSensorEvent("Significant Motion",          timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case Sensor.TYPE_STEP_DETECTOR:
+                            writeSensorEvent("Step Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                        case TYPE_TILT_DETECTOR:
+                            writeSensorEvent("Tilt Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            return null;
+        }
+    }
 }
+
+
