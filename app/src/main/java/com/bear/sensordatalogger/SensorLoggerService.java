@@ -50,25 +50,28 @@ public class SensorLoggerService extends Service {
         Bundle extras = intent.getExtras();
 
         String fileName = (String) extras.get("fileName");
-        int sensorDelay = (int) extras.get("delay");
+        Integer sensorDelay = (Integer) extras.get("delay");
+        Integer sensorDelay_ms = (Integer) extras.get("delay_ms");
         EnumSet<SensorLogger.SensorType> sensorTypes = (EnumSet<SensorLogger.SensorType>) extras.get("sensorTypes");
         EnumSet<SensorLogger.ReportingMode> reportingModes = (EnumSet<SensorLogger.ReportingMode>) extras.get("reportingModes");
         Boolean lowPowerMode = (Boolean) extras.get("lowPowerMode");
 
-        _logger.setSensorDelay(sensorDelay);
+        if(sensorDelay != null)
+            _logger.setSensorDelay(sensorDelay); // Prioritize standard delay over custom delay
+        else if(sensorDelay_ms != null)
+            _logger.setSensorDelay_ms(sensorDelay_ms);
+        else // sensorDelay == null && sensorDelay_ms == null
+            _logger.setSensorDelay(_logger.sensorDelay()); // Really not usable - but for completeness
 
         if(lowPowerMode != null)
             _logger.setLowPowerMode(lowPowerMode);
 
         if(sensorTypes != null && reportingModes == null)
             _logger.startLogger(fileName, sensorTypes);
-
         else if(sensorTypes == null && reportingModes != null)
             _logger.startLogger(fileName, SensorLogger.SensorType.all, reportingModes);
-
         else if (sensorTypes == null)
             _logger.startLogger(fileName);
-
         else
             _logger.startLogger(fileName, sensorTypes, reportingModes);
 

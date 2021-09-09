@@ -55,7 +55,7 @@ public class SensorLogger implements SensorEventListener2 {
     SensorLogger(Context context)
     {
         _sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        _sensorDelay = SensorManager.SENSOR_DELAY_UI;
+        _sensorDelay = SensorManager.SENSOR_DELAY_NORMAL;
         _lowPowerMode = false;
         _writerIsOpen = new AtomicBoolean(false);
     }
@@ -260,6 +260,12 @@ public class SensorLogger implements SensorEventListener2 {
                 _sensorDelay = SensorManager.SENSOR_DELAY_NORMAL;
                 break;
         }
+    }
+
+    public void setSensorDelay_ms(int sensorDelay_ms)
+    {
+        if(sensorDelay_ms > 0)
+            _sensorDelay = sensorDelay_ms*1000;
     }
 
     // Ignoring warning: https://stackoverflow.com/a/46166223

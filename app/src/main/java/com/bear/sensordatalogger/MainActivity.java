@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import java.util.EnumSet;
 
+//TODO: Extras should be configurable via UI (maybe except for the file name?)
 public class MainActivity extends AppCompatActivity {
 
     Intent _loggerIntent;
@@ -24,29 +25,30 @@ public class MainActivity extends AppCompatActivity {
         _loggerIntent = new Intent(getApplicationContext(), SensorLoggerService.class);
 
         Button button = (Button) findViewById(R.id.recordButton);
+
         button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        @Override
-        public void onClick(View view) {
+                if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
+                {
+                    button.setText(getString(R.string.start_recording));
+                    stopService(_loggerIntent);
 
-            if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
-            {
-                button.setText(getString(R.string.start_recording));
-                stopService(_loggerIntent);
+                } else { // Start Recording
+                    button.setText(getString(R.string.stop_recording));
 
-            } else { // Start Recording
-                button.setText(getString(R.string.stop_recording));
+                    _loggerIntent.putExtra("fileName", getStorageDir());
+//                    _loggerIntent.putExtra("delay_ms", 100);
+                    _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
+                    _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
+                    _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
+                    _loggerIntent.putExtra("lowPowerMode", Boolean.TRUE);
+    //                _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
 
-                _loggerIntent.putExtra("fileName", getStorageDir());
-                _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
-                _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
-                _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
-                _loggerIntent.putExtra("lowPowerMode", Boolean.TRUE);
-//                _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
-
-                startForegroundService(_loggerIntent);
+                    startForegroundService(_loggerIntent);
+                }
             }
-        }
         });
 
     }
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy()
     {
+        // Make sure we stop the SensorLogging-Service if the user closes the application.
         stopService(_loggerIntent);
         super.onDestroy();
     }
