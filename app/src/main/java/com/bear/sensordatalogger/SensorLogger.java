@@ -19,6 +19,7 @@ import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enums
 
 // Inspired by: https://github.com/ejoebstl/Android-Sensor-Log
 //
+// Service inspired by: https://code.tutsplus.com/tutorials/android-barometer-logger-acquiring-sensor-data--mobile-10558
 
 // Docs:    https://source.android.com/devices/sensors/sensor-types
 //          https://developer.android.com/reference/android/hardware/SensorEvent#values
@@ -73,6 +74,16 @@ public class SensorLogger implements SensorEventListener2 {
             registerCompositeSensors(mode);
 
         _isRecording = true;
+    }
+
+    public void startLogger(String logFileName, EnumSet<SensorType> sensorType)
+    {
+        startLogger(logFileName, sensorType, ReportingMode.all);
+    }
+
+    public void startLogger(String logFileName)
+    {
+        startLogger(logFileName, SensorType.all, ReportingMode.all);
     }
 
     public void stopLogger()
