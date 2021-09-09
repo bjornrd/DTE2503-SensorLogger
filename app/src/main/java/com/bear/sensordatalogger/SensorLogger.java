@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 //
 
 public class SensorLogger implements SensorEventListener2 {
-    AtomicBoolean _writerIsOpen; // To assure that the _logWriter is open when executing write-AsyncTask - Pretty hacky solution...
+    private AtomicBoolean _writerIsOpen; // To assure that the _logWriter is open when executing write-AsyncTask - Pretty hacky solution...
 
     private final SensorManager _sensorManager;
     private FileWriter          _logWriter;
