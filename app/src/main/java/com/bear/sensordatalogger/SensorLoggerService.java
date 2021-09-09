@@ -55,7 +55,18 @@ public class SensorLoggerService extends Service {
         EnumSet<SensorLogger.ReportingMode> reportingModes = (EnumSet<SensorLogger.ReportingMode>) extras.get("reportingModes");
 
         _logger.setSensorDelay(sensorDelay);
-        _logger.startLogger(fileName, sensorTypes, reportingModes);
+
+        if(sensorTypes != null && reportingModes == null)
+            _logger.startLogger(fileName, sensorTypes);
+
+        else if(sensorTypes == null && reportingModes != null)
+            _logger.startLogger(fileName, SensorLogger.SensorType.all, reportingModes);
+
+        else if (sensorTypes == null)
+            _logger.startLogger(fileName);
+
+        else
+            _logger.startLogger(fileName, sensorTypes, reportingModes);
         
 
         // "... .START_STICKY is used for services that are explicitly started and stopped as needed, ..."
