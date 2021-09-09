@@ -19,8 +19,6 @@ import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enums
 
 // Inspired by: https://github.com/ejoebstl/Android-Sensor-Log
 //
-// Service inspired by: https://code.tutsplus.com/tutorials/android-barometer-logger-acquiring-sensor-data--mobile-10558
-
 // Docs:    https://source.android.com/devices/sensors/sensor-types
 //          https://developer.android.com/reference/android/hardware/SensorEvent#values
 //
@@ -183,7 +181,7 @@ public class SensorLogger implements SensorEventListener2 {
 
     @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+    public void onSensorChanged(SensorEvent sensorEvent) { //TODO: Run work in async background task
         if(_isRecording) {
             try {
 

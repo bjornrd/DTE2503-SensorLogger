@@ -17,6 +17,9 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.EnumSet;
 
+
+// Service inspired by: https://code.tutsplus.com/tutorials/android-barometer-logger-acquiring-sensor-data--mobile-10558
+
 public class SensorLoggerService extends Service {
 
     private SensorLogger _logger;
@@ -55,7 +58,7 @@ public class SensorLoggerService extends Service {
         _logger.startLogger(fileName, sensorTypes, reportingModes);
         
 
-        // START_STICKY is used for services that are explicitly started and stopped as needed, ...
+        // "... .START_STICKY is used for services that are explicitly started and stopped as needed, ..."
         // https://developer.android.com/reference/android/app/Service
         return START_STICKY;
     }
