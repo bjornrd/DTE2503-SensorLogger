@@ -53,8 +53,12 @@ public class SensorLoggerService extends Service {
         int sensorDelay = (int) extras.get("delay");
         EnumSet<SensorLogger.SensorType> sensorTypes = (EnumSet<SensorLogger.SensorType>) extras.get("sensorTypes");
         EnumSet<SensorLogger.ReportingMode> reportingModes = (EnumSet<SensorLogger.ReportingMode>) extras.get("reportingModes");
+        Boolean lowPowerMode = (Boolean) extras.get("lowPowerMode");
 
         _logger.setSensorDelay(sensorDelay);
+
+        if(lowPowerMode != null)
+            _logger.setLowPowerMode(lowPowerMode);
 
         if(sensorTypes != null && reportingModes == null)
             _logger.startLogger(fileName, sensorTypes);
@@ -67,7 +71,9 @@ public class SensorLoggerService extends Service {
 
         else
             _logger.startLogger(fileName, sensorTypes, reportingModes);
-        
+
+
+
 
         // "... .START_STICKY is used for services that are explicitly started and stopped as needed, ..."
         // https://developer.android.com/reference/android/app/Service
