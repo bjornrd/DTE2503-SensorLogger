@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        stopService(_loggerIntent);
+        super.onDestroy();
+    }
+
     private String getStorageDir()
     {
         return this.getExternalFilesDir(null).getAbsolutePath();
