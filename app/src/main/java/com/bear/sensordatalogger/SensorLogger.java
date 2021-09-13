@@ -8,6 +8,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
+import android.hardware.TriggerEvent;
+import android.hardware.TriggerEventListener;
 import android.os.AsyncTask;
 
 import java.io.File;
@@ -34,6 +36,7 @@ public class SensorLogger implements SensorEventListener2 {
     private int                 _sensorDelay;
     private boolean             _lowPowerMode;
     private final int           TYPE_TILT_DETECTOR = 22;  // https://android.googlesource.com/platform/cts/+/master/tests/sensor/src/android/hardware/cts/SensorSupportTest.java : l127
+    private TriggerEventListener _triggerEventListener;
 
     public enum ReportingMode
     {
@@ -76,6 +79,13 @@ public class SensorLogger implements SensorEventListener2 {
         if (sensorType.contains(SensorType.composite))
             registerCompositeSensors(mode);
 
+        _triggerEventListener = new TriggerEventListener() {
+            @Override
+            public void onTrigger(TriggerEvent triggerEvent) {
+                   new TriggerEventLoggerTask().execute(triggerEvent);
+            }
+        };
+
         _isRecording = true;
     }
 
@@ -93,6 +103,7 @@ public class SensorLogger implements SensorEventListener2 {
     {
         _sensorManager.flush(this);
         _sensorManager.unregisterListener(this);
+        _sensorManager.cancelTriggerSensor(_triggerEventListener, _sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION));
 
         try {
             _writerIsOpen.set(false);
@@ -164,7 +175,8 @@ public class SensorLogger implements SensorEventListener2 {
 
     private void registerOneShotCompositeSensors()
     {
-        registerListener(Sensor.TYPE_SIGNIFICANT_MOTION); // Wake-up -- Low Power
+        if(hasSensorType(Sensor.TYPE_SIGNIFICANT_MOTION))
+            _sensorManager.requestTriggerSensor(_triggerEventListener, _sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION)); // Wake-up -- Low Power
     }
 
     private void registerSpecialCompositeSensors()
@@ -207,6 +219,21 @@ public class SensorLogger implements SensorEventListener2 {
     private void writeSensorEvent(String descriptor, String timestamp, SensorEvent sensorEvent, float val1) throws IOException
     {
         writeSensorEvent(descriptor, timestamp, sensorEvent, val1, 0.f, 0.f);
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void writeTriggerEvent(String descriptor, String timestamp, TriggerEvent triggerEvent, float val1, float val2, float val3) throws IOException {
+        if(_writerIsOpen.get())
+            _logWriter.write(String.format("%s; %s; %d; %f; %f; %f\n", descriptor, timestamp, triggerEvent.timestamp, val1, val2, val3));
+
+        // Re-enable the one-shot sensor that reported
+        if(hasSensorType(triggerEvent.sensor.getType()))
+            _sensorManager.requestTriggerSensor(_triggerEventListener, _sensorManager.getDefaultSensor(triggerEvent.sensor.getType())); // Wake-up -- Low Power
+    }
+
+    private void writeTriggerEvent(String descriptor, String timestamp, TriggerEvent triggerEvent, float val1) throws IOException
+    {
+        writeTriggerEvent(descriptor, timestamp, triggerEvent, val1, 0.f, 0.f);
     }
 
     @Override
@@ -335,6 +362,33 @@ public class SensorLogger implements SensorEventListener2 {
                             break;
                         case TYPE_TILT_DETECTOR:
                             writeSensorEvent("Tilt Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
+                            break;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            return null;
+        }
+    }
+
+    private class TriggerEventLoggerTask extends AsyncTask<TriggerEvent, Void, Void>
+    {
+        @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
+        @Override
+        protected Void doInBackground(TriggerEvent... triggerEvents) {
+            TriggerEvent triggerEvent = triggerEvents[0];
+
+            if(_isRecording) {
+                try {
+
+                    String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
+                    switch (triggerEvent.sensor.getType()) {
+                        case Sensor.TYPE_SIGNIFICANT_MOTION:
+                            writeTriggerEvent("Significant Motion", timestamp, triggerEvent, triggerEvent.values[0]);
                             break;
                     }
 

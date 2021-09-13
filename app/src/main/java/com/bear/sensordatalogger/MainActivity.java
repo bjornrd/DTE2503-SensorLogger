@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
                     _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
                     _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
                     _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
-                    _loggerIntent.putExtra("lowPowerMode", Boolean.TRUE);
-    //                _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
+//                    _loggerIntent.putExtra("lowPowerMode", Boolean.TRUE);
+                    _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
 
                     startForegroundService(_loggerIntent);
                 }
