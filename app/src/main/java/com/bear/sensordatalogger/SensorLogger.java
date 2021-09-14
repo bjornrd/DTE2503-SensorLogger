@@ -13,12 +13,11 @@ import android.hardware.TriggerEventListener;
 import android.os.AsyncTask;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enumsets-in-java/
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 
 // Inspired by: https://github.com/ejoebstl/Android-Sensor-Log
@@ -29,8 +28,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SensorLogger implements SensorEventListener2 {
 
+    Context                     _context;
     private final SensorManager _sensorManager;
-    private LogManager          _logWriter;
+    private LogManager          _logManager;
     private boolean             _isRecording;
     private int                 _sensorDelay;
     private boolean             _lowPowerMode;
@@ -57,7 +57,9 @@ public class SensorLogger implements SensorEventListener2 {
 
     SensorLogger(Context context)
     {
-        _sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        _context = context;
+
+        _sensorManager = (SensorManager) _context.getSystemService(SENSOR_SERVICE);
         _sensorDelay = SensorManager.SENSOR_DELAY_NORMAL;
         _lowPowerMode = false;
         _isRecording = false;
@@ -66,7 +68,7 @@ public class SensorLogger implements SensorEventListener2 {
     public void startLogger(String logFileName, EnumSet<SensorType> sensorType, EnumSet<ReportingMode> mode)
     {
         try {
-            _logWriter = new LogFileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+            _logManager = new LogFileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,7 +108,7 @@ public class SensorLogger implements SensorEventListener2 {
         _sensorManager.unregisterListener(this);
         _sensorManager.cancelTriggerSensor(_triggerEventListener, _sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION));
 
-        _logWriter.close();
+        _logManager.close();
     }
 
     private void registerBaseSensors(EnumSet<ReportingMode> mode)
@@ -194,65 +196,65 @@ public class SensorLogger implements SensorEventListener2 {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent)
     {
-        if(_logWriter.isOpen() && _isRecording)
+        if(_logManager.isOpen() && _isRecording)
             {
                     @SuppressLint("SimpleDateFormat")
                     String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 
                     switch (sensorEvent.sensor.getType()) {
                         case Sensor.TYPE_ACCELEROMETER:
-                            _logWriter.writeSensorEvent("Accelerometer",               timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Accelerometer),               timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_MAGNETIC_FIELD:
-                            _logWriter.writeSensorEvent("Magnetic Field",              timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Magnetic_Field),              timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_GYROSCOPE:
-                            _logWriter.writeSensorEvent("Gyroscope",                   timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Gyroscope),                   timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_PRESSURE:
-                            _logWriter.writeSensorEvent("Pressure",                    timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Pressure),                    timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                            _logWriter.writeSensorEvent("Ambient Temperature",         timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Ambient_Temperature),         timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_HEART_RATE:
-                            _logWriter.writeSensorEvent("Heart Rate",                  timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Heart_Rate),                  timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_LIGHT:
-                            _logWriter.writeSensorEvent("Light Level",                 timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Light_Level),                 timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_PROXIMITY:
-                            _logWriter.writeSensorEvent("Proximity Distance",          timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Proximity_Distance),          timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_RELATIVE_HUMIDITY:
-                            _logWriter.writeSensorEvent("Relative Humidity",           timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Relative_Humidity),           timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_LINEAR_ACCELERATION:
-                            _logWriter.writeSensorEvent("Linear Acceleration",         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Linear_Acceleration),         timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_ROTATION_VECTOR:
-                            _logWriter.writeSensorEvent("Rotation Vector",             timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Rotation_Vector),             timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_GAME_ROTATION_VECTOR:
-                            _logWriter.writeSensorEvent("Game Rotation Vector",        timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Game_Rotation_Vector),        timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_GRAVITY:
-                            _logWriter.writeSensorEvent("Gravity",                     timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Gravity),                     timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
-                            _logWriter.writeSensorEvent("Geomagnetic Rotation Vector", timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Geomagnetic_Rotation_Vector), timestamp, sensorEvent, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                             break;
                         case Sensor.TYPE_STEP_COUNTER:
-                            _logWriter.writeSensorEvent("Step Counter",                timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Step_Counter),                timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_SIGNIFICANT_MOTION:
-                            _logWriter.writeSensorEvent("Significant Motion",          timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Significant_Motion),          timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case Sensor.TYPE_STEP_DETECTOR:
-                            _logWriter.writeSensorEvent("Step Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Step_Detector),               timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                         case TYPE_TILT_DETECTOR:
-                            _logWriter.writeSensorEvent("Tilt Detector",               timestamp, sensorEvent, sensorEvent.values[0]);
+                            _logManager.writeSensorEvent(_context.getString(R.string.Tilt_Detector),               timestamp, sensorEvent, sensorEvent.values[0]);
                             break;
                     }
 
@@ -261,8 +263,8 @@ public class SensorLogger implements SensorEventListener2 {
 
     @SuppressLint("DefaultLocale")
     private void writeTriggerEvent(String descriptor, String timestamp, TriggerEvent triggerEvent, float val1, float val2, float val3) throws IOException {
-        if(_logWriter.isOpen())
-            _logWriter.write(String.format("%s; %s; %d; %f; %f; %f\n", descriptor, timestamp, triggerEvent.timestamp, val1, val2, val3));
+        if(_logManager.isOpen())
+            _logManager.write(String.format("%s; %s; %d; %f; %f; %f\n", descriptor, timestamp, triggerEvent.timestamp, val1, val2, val3));
 
         // Re-enable the one-shot sensor that reported
         if(hasSensorType(triggerEvent.sensor.getType()))
@@ -340,7 +342,7 @@ public class SensorLogger implements SensorEventListener2 {
         protected Void doInBackground(TriggerEvent... triggerEvents) {
             TriggerEvent triggerEvent = triggerEvents[0];
 
-            if(_logWriter.isOpen() && _isRecording)
+            if(_logManager.isOpen() && _isRecording)
             {
                 try
                 {

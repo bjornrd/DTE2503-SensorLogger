@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Accelerometer">Accelerometer</string>
+    <string name="Magnetic_Field">Magnetic Field</string>
+    <string name="Gyroscope">Gyroscope</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Ambient_Temperature">Ambient Temperature</string>
+    <string name="Heart_Rate">Heart Rate</string>
+    <string name="Light_Level">Light Level</string>
+    <string name="Proximity_Distance">Proximity Distance</string>
+    <string name="Relative_Humidity">Relative Humidity</string>
+    <string name="Linear_Acceleration">Linear Acceleration</string>
+    <string name="Rotation_Vector">Rotation Vector</string>
+    <string name="Game_Rotation_Vector">Game Rotation Vector</string>
+    <string name="Gravity">Gravity</string>
+    <string name="Geomagnetic_Rotation_Vector">Geomagnetic Rotation Vector</string>
+    <string name="Step_Counter">Step Counter</string>
+    <string name="Significant_Motion">Significant Motion</string>
+    <string name="Step_Detector">Step Detector</string>
+    <string name="Tilt_Detector">Tilt Detector</string>
+</resources>
