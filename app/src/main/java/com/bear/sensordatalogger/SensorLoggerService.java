@@ -24,7 +24,6 @@ public class SensorLoggerService extends Service {
 
     private SensorLogger _logger;
 
-
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         // https://github.com/smartdevicelink/sdl_java_suite/issues/843#issuecomment-416168295

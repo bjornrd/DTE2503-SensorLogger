@@ -30,24 +30,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
-                {
-                    button.setText(getString(R.string.start_recording));
-                    stopService(_loggerIntent);
+                // Upwards of 80+ lost frames on initial button click, so thread the logging.
+                // Make sure that all UI-related stuff is run on UI thread.
+                new Thread(() -> {
+                    if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
+                    {
+                        runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
 
-                } else { // Start Recording
-                    button.setText(getString(R.string.stop_recording));
+                        stopService(_loggerIntent);
 
-                    _loggerIntent.putExtra("fileName", getStorageDir());
-//                    _loggerIntent.putExtra("delay_ms", 100);
-                    _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
-                    _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
-                    _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
-//                    _loggerIntent.putExtra("lowPowerMode", Boolean.TRUE);
-                    _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
+                    } else { // Start Recording
+                        runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
 
-                    startForegroundService(_loggerIntent);
-                }
+                        _loggerIntent.putExtra("fileName", getStorageDir());
+                        _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
+                        _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
+                        _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
+                        _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
+
+                        startForegroundService(_loggerIntent);
+                    }
+                }).start();
             }
         });
 
