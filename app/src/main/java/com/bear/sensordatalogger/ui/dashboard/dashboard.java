@@ -75,11 +75,12 @@ public class dashboard extends Fragment {
 
                         _context.stopService(_loggerIntent);
 
+                        // Enable the settings/log-menu items when stopping the logger
                         BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
-
 
                         requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(true));
                         requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.log_menu).setEnabled(true));
+
 
                     // Start Recording
                     // -------------------------
@@ -94,6 +95,9 @@ public class dashboard extends Fragment {
 
                         _context.startForegroundService(_loggerIntent);
 
+                        // Disable the settings/log-menu items when starting the logger --
+                        // As we don't want the user to change settings mid-logging, thinking that
+                        // the changes are applied on-the-fly (as they're not).
                         BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
 
                         requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(false));
