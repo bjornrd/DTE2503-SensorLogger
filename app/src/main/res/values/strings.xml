@@ -10,6 +10,7 @@
     <string name="sensor_delay_options">Sensor Delay</string>
     <string name="sensor_type_options">Sensor Type</string>
     <string name="sensor_reporting_options">Sensor Reporting</string>
+    <string name="sensor_low_power_mode_options">Low Power Mode</string>
 
     <string name="sensor_delay_fastest">Fastest</string>
     <string name="sensor_delay_game">Game</string>

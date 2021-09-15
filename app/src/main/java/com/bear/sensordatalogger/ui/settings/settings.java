@@ -32,9 +32,25 @@ public class settings extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         _binding = null;
+    }
+
+    public void enable()
+    {
+
+    }
+
+    public void disable()
+    {
+
     }
 
 }

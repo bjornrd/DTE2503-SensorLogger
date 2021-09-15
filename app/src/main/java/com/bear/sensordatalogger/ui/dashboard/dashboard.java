@@ -21,6 +21,8 @@ import com.bear.sensordatalogger.R;
 import com.bear.sensordatalogger.SensorLogger;
 import com.bear.sensordatalogger.SensorLoggerService;
 import com.bear.sensordatalogger.databinding.DashboardFragmentBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 public class dashboard extends Fragment {
 
@@ -43,8 +45,10 @@ public class dashboard extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
+
         _loggerIntent = new Intent(_context, SensorLoggerService.class);
 
         Button button = (Button) requireView().findViewById(R.id.recordButton);
@@ -71,6 +75,12 @@ public class dashboard extends Fragment {
 
                         _context.stopService(_loggerIntent);
 
+                        BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
+
+
+                        requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(true));
+                        requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.log_menu).setEnabled(true));
+
                     // Start Recording
                     // -------------------------
                     } else {
@@ -83,6 +93,12 @@ public class dashboard extends Fragment {
                         _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
 
                         _context.startForegroundService(_loggerIntent);
+
+                        BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
+
+                        requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(false));
+                        requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.log_menu).setEnabled(false));
+
                     }
                 }).start();
             }
