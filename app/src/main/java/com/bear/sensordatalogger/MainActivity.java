@@ -1,84 +1,59 @@
 package com.bear.sensordatalogger;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import com.bear.sensordatalogger.databinding.ActivityMainBinding;
+import com.bear.sensordatalogger.ui.dashboard.dashboard;
+import com.bear.sensordatalogger.ui.log.log;
+import com.bear.sensordatalogger.ui.settings.settings;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.EnumSet;
 
-//TODO: Extras should be configurable via UI (maybe except for the file name?)
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener{
 
-    Intent _loggerIntent;
+    private ActivityMainBinding _binding;
+
+    dashboard dashboardFragment = new dashboard();
+    log logFragment = new log();
+    settings settingsFragment = new settings();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        _loggerIntent = new Intent(getApplicationContext(), SensorLoggerService.class);
+        _binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(_binding.getRoot());
 
-        Button button = (Button) findViewById(R.id.recordButton);
+        BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Upwards of 80+ lost frames on initial button click, so thread the logging.
-                // Make sure that all UI-related stuff is run on UI thread.
-                new Thread(() -> {
-                    if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
-                    {
-                        runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
-
-                        stopService(_loggerIntent);
-
-                    } else { // Start Recording
-                        runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
-
-                        _loggerIntent.putExtra("fileName", getStorageDir());
-                        _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
-                        _loggerIntent.putExtra("sensorTypes",  SensorLogger.SensorType.all);
-                        _loggerIntent.putExtra("reportingModes", SensorLogger.ReportingMode.all);
-                        _loggerIntent.putExtra("lowPowerMode", Boolean.FALSE);
-
-                        startForegroundService(_loggerIntent);
-                    }
-                }).start();
-            }
-        });
-
+        navView.setOnItemSelectedListener(this);
+        navView.setSelectedItemId(R.id.dashboard_menu);
     }
 
     @Override
-    protected void onDestroy()
-    {
-        // Make sure we stop the SensorLogging-Service if the user closes the application.
-        stopService(_loggerIntent);
-        super.onDestroy();
-    }
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-    private String getStorageDir()
-    {
-        return this.getExternalFilesDir(null).getAbsolutePath();
-    }
-
-    // https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android/5921190#5921190
-    private boolean isMyServiceRunning(Class<?> serviceClass)
-    {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+        switch (item.getItemId()) {
+            case R.id.dashboard_menu:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, dashboardFragment).commit();
                 return true;
-            }
+
+            case R.id.log_menu:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, logFragment).commit();
+                return true;
+
+            case R.id.settings_menu:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, settingsFragment).commit();
+                return true;
         }
+
         return false;
     }
+
+
 }
