@@ -104,6 +104,7 @@
                     android:id="@+id/sensorTypeBaseSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_type_base"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -112,6 +113,7 @@
                     android:id="@+id/sensorTypeCompoundSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_type_compound"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -130,6 +132,7 @@
                     android:id="@+id/sensorReportingModeContinuousSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_reporting_mode_continuous"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -138,6 +141,7 @@
                     android:id="@+id/sensorReportingModeOnChangeSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_reporting_mode_onChange"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -146,6 +150,7 @@
                     android:id="@+id/sensorReportingModeOneshotSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_reporting_mode_oneShot"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -154,6 +159,7 @@
                     android:id="@+id/sensorReportingModeSpecialSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:minHeight="48dp"
                     android:text="@string/sensor_reporting_mode_special"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
