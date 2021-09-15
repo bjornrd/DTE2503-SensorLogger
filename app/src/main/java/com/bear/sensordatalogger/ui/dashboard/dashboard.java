@@ -62,13 +62,18 @@ public class dashboard extends Fragment {
                 // Upwards of 80+ lost frames on initial button click, so thread the logging.
                 // Make sure that all UI-related stuff is run on UI thread.
                 new Thread(() -> {
-                    if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
+
+                    // Stop Recording
+                    // -------------------------
+                    if(isMyServiceRunning(SensorLoggerService.class))
                     {
                         requireActivity().runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
 
                         _context.stopService(_loggerIntent);
 
-                    } else { // Start Recording
+                    // Start Recording
+                    // -------------------------
+                    } else {
                         requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
 
                         _loggerIntent.putExtra("fileName", getStorageDir());
