@@ -35,11 +35,9 @@ public class dashboard extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        _context = getActivity().getApplicationContext();
+        _context = requireActivity().getApplicationContext();
         _viewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
         _binding = DashboardFragmentBinding.inflate(inflater, container, false);
-
-
 
         return _binding.getRoot();
     }
@@ -49,7 +47,13 @@ public class dashboard extends Fragment {
     {
         _loggerIntent = new Intent(_context, SensorLoggerService.class);
 
-        Button button = (Button) getView().findViewById(R.id.recordButton);
+        Button button = (Button) requireView().findViewById(R.id.recordButton);
+
+        if(isMyServiceRunning(SensorLoggerService.class))
+            requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
+        else
+            requireActivity().runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,12 +64,12 @@ public class dashboard extends Fragment {
                 new Thread(() -> {
                     if(isMyServiceRunning(SensorLoggerService.class)) // Stop Recording
                     {
-                        getActivity().runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
+                        requireActivity().runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
 
                         _context.stopService(_loggerIntent);
 
                     } else { // Start Recording
-                        getActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
+                        requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
 
                         _loggerIntent.putExtra("fileName", getStorageDir());
                         _loggerIntent.putExtra("delay", SensorManager.SENSOR_DELAY_NORMAL);
@@ -84,12 +88,18 @@ public class dashboard extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         _binding = null;
-        _context.stopService(_loggerIntent);
+    }
+
+
+    public void stopService()
+    {
+        if(_context != null)
+            _context.stopService(_loggerIntent);
     }
 
     private String getStorageDir()
     {
-        return getActivity().getExternalFilesDir(null).getAbsolutePath();
+        return requireActivity().getExternalFilesDir(null).getAbsolutePath();
     }
 
     // https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android/5921190#5921190

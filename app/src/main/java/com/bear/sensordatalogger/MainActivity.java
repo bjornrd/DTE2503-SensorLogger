@@ -55,5 +55,12 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         return false;
     }
 
+    @Override
+    public void onDestroy()
+    {
+        dashboardFragment.stopService();
+        super.onDestroy();
+    }
+
 
 }
