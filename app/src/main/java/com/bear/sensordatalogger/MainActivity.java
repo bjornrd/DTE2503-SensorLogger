@@ -35,24 +35,30 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navView.setSelectedItemId(R.id.dashboard_menu);
     }
 
+    // https://www.geeksforgeeks.org/bottom-navigation-bar-in-android/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.dashboard_menu:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, dashboardFragment).commit();
-                return true;
+        int itemID = item.getItemId();
 
-            case R.id.log_menu:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, logFragment).commit();
-                return true;
-
-            case R.id.settings_menu:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, settingsFragment).commit();
-                return true;
+        // Using if-else instead of switch
+        // https://stackoverflow.com/a/64335551
+        if (itemID == R.id.dashboard_menu) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, dashboardFragment).commit();
+            return true;
         }
-
-        return false;
+        else if(itemID == R.id.log_menu)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, logFragment).commit();
+            return true;
+        }
+        else if(itemID == R.id.settings_menu)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, settingsFragment).commit();
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
