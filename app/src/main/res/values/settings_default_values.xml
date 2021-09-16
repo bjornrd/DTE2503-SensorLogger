@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+<!-- 0 is 'Fastest', 1 is 'Game', 2 is 'UI', and 3 is 'Normal' -->
+    <integer name="sensor_delay_default_value">3</integer>
+    <integer name="sensor_delay_normal_default_value">1</integer>
+    <integer name="sensor_delay_ui_default_value">0</integer>
+    <integer name="sensor_delay_game_default_value">0</integer>
+    <integer name="sensor_delay_fastest_default_value">0</integer>
+
+    <integer name="sensor_type_base_default_value">1</integer>
+    <integer name="sensor_type_compound_default_value">1</integer>
+
+    <integer name="sensor_reporting_continuous_default_value">1</integer>
+    <integer name="sensor_reporting_onChange_default_value">1</integer>
+    <integer name="sensor_reporting_oneShot_default_value">1</integer>
+    <integer name="sensor_reporting_special_default_value">1</integer>
+
+    <integer name="sensor_low_power_mode_default_value">0</integer>
+
+</resources>
