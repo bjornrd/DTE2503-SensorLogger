@@ -335,6 +335,7 @@ public class SensorLogger implements SensorEventListener2 {
             _sensorDelay = sensorDelay_ms*1000;
     }
 
+    // TODO: Move to LogFileWriter
     private class TriggerEventLoggerTask extends AsyncTask<TriggerEvent, Void, Void>
     {
         @SuppressLint({"DefaultLocale", "SimpleDateFormat"})

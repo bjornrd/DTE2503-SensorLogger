@@ -38,7 +38,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="@string/sensor_delay_normal" />
+                        android:text="@string/sensor_delay_normal"/>
 
                     <RadioButton
                         android:id="@+id/sensorDelayUIRadioButton"
