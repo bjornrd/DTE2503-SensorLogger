@@ -42,6 +42,8 @@ public class dashboard extends Fragment {
     EnumSet<ReportingMode>  _reportingMode;
     Boolean                 _lowPowerMode;
 
+    boolean _defaultsHaveBeenSet = false;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -80,7 +82,6 @@ public class dashboard extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-
         _loggerIntent = new Intent(_context, SensorLoggerService.class);
 
         Button button = (Button) requireView().findViewById(R.id.recordButton);
@@ -90,6 +91,9 @@ public class dashboard extends Fragment {
         else
             requireActivity().runOnUiThread(() -> button.setText(getString(R.string.start_recording)));
 
+
+        if(!_defaultsHaveBeenSet)
+            setDefaultValues();
 
         button.setOnClickListener(view1 -> {
 
@@ -116,52 +120,6 @@ public class dashboard extends Fragment {
                 // -------------------------
                 } else {
                     requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
-
-                    // Handle default values
-                    if(_sensorDelay == null)
-                        _sensorDelay = _context.getResources().getInteger(R.integer.sensor_delay_default_value);
-
-                    if(_sensorType == null)
-                    {
-                        EnumSet<SensorType> sensorTypes = EnumSet.noneOf(SensorType.class);
-
-                        int base = _context.getResources().getInteger(R.integer.sensor_type_base_default_value);
-                        int comp = _context.getResources().getInteger(R.integer.sensor_type_compound_default_value);
-
-                        if(base == 1)
-                            sensorTypes.add(SensorType.base);
-                        if(comp == 1)
-                            sensorTypes.add(SensorType.composite);
-
-                        _sensorType = sensorTypes;
-                    }
-
-                    if(_reportingMode == null)
-                    {
-                        EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
-
-                        int continuous  = _context.getResources().getInteger(R.integer.sensor_reporting_continuous_default_value);
-                        int onChange    = _context.getResources().getInteger(R.integer.sensor_reporting_onChange_default_value);
-                        int oneShot     = _context.getResources().getInteger(R.integer.sensor_reporting_oneShot_default_value);
-                        int special     = _context.getResources().getInteger(R.integer.sensor_reporting_special_default_value);
-
-                        if(continuous == 1)
-                            reportingMode.add(ReportingMode.continuous);
-                        if(onChange == 1)
-                            reportingMode.add(ReportingMode.onChange);
-                        if(oneShot == 1)
-                            reportingMode.add(ReportingMode.oneShot);
-                        if(special == 1)
-                            reportingMode.add(ReportingMode.special);
-
-                        _reportingMode = reportingMode;
-                    }
-
-                    if(_lowPowerMode == null)
-                    {
-                        int defaultLowPowerMode = _context.getResources().getInteger(R.integer.sensor_low_power_mode_default_value);
-                        _lowPowerMode = defaultLowPowerMode == 1;
-                    }
 
                     _loggerIntent.putExtra("fileName",          getStorageDir());
                     _loggerIntent.putExtra("delay",             _sensorDelay);
@@ -215,9 +173,52 @@ public class dashboard extends Fragment {
         return false;
     }
 
-    public void setDefaultValues(Integer sensorDelay, EnumSet<SensorType> sensorTypes, EnumSet<ReportingMode> reportingModes, Boolean lowPowerMode)
+    public void setDefaultValues()
     {
+        // Sensor Delay
+        _sensorDelay = _context.getResources().getInteger(R.integer.sensor_delay_default_value);
 
+
+        // Sensor Types
+        EnumSet<SensorType> sensorTypes = EnumSet.noneOf(SensorType.class);
+
+        int base = _context.getResources().getInteger(R.integer.sensor_type_base_default_value);
+        int comp = _context.getResources().getInteger(R.integer.sensor_type_compound_default_value);
+
+        if(base == 1)
+            sensorTypes.add(SensorType.base);
+        if(comp == 1)
+            sensorTypes.add(SensorType.composite);
+
+        _sensorType = sensorTypes;
+
+
+        // Sensor Reporting Modes
+        EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
+
+        int continuous  = _context.getResources().getInteger(R.integer.sensor_reporting_continuous_default_value);
+        int onChange    = _context.getResources().getInteger(R.integer.sensor_reporting_onChange_default_value);
+        int oneShot     = _context.getResources().getInteger(R.integer.sensor_reporting_oneShot_default_value);
+        int special     = _context.getResources().getInteger(R.integer.sensor_reporting_special_default_value);
+
+
+        if(continuous == 1)
+            reportingMode.add(ReportingMode.continuous);
+        if(onChange == 1)
+            reportingMode.add(ReportingMode.onChange);
+        if(oneShot == 1)
+            reportingMode.add(ReportingMode.oneShot);
+        if(special == 1)
+            reportingMode.add(ReportingMode.special);
+
+        _reportingMode = reportingMode;
+
+
+        // Low Power Mode
+        int defaultLowPowerMode = _context.getResources().getInteger(R.integer.sensor_low_power_mode_default_value);
+        _lowPowerMode = defaultLowPowerMode == 1;
+
+        _defaultsHaveBeenSet = true;
     }
 
 
