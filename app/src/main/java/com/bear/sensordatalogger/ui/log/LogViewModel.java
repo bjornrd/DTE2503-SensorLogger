@@ -9,7 +9,7 @@ public class LogViewModel extends ViewModel {
 
     public LogViewModel() {
         _text = new MutableLiveData<>();
-        _text.setValue("This is notifications fragment");
+        _text.setValue("This is log fragment");
     }
 
     public LiveData<String> getText() {
