@@ -88,9 +88,18 @@ public class LogFileWriter extends FileWriter implements LogManager
 
     private void internalWrite(String descriptor, String timeStamp, SensorEvent sensorEvent, float val1, float val2, float val3)
     {
-        new SensorEventLoggerTask().execute(new WriteParams(descriptor, timeStamp, sensorEvent, val1, val2, val3));
+        // Do I need to make sure that asynctask's don't try to write to the same file at the same time?
+        // Write operations should not take that long, so using SERIAL_EXECUTOR should not cause
+        // a large backlog of stuff?...
+        //
+        // As stated in the doc for SERIAL_EXECUTOR:
+        // "This field was deprecated in API level 30. Globally serializing tasks results in
+        // excessive queuing for unrelated operations."
+        new SensorEventLoggerTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new WriteParams(descriptor, timeStamp, sensorEvent, val1, val2, val3));
     }
 
+    // This stuff seems to be deprecated in API level 30 -- and they recommend using
+    // Executors instead.  That'll be for another implementation, another time.
     @SuppressLint("StaticFieldLeak")
     private class SensorEventLoggerTask extends AsyncTask<WriteParams, Void, Void>
     {

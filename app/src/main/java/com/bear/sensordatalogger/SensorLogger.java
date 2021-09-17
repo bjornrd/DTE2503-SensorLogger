@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet; // https://eddmann.com/posts/using-bit-flags-and-enumsets-in-java/
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 
@@ -83,7 +84,7 @@ public class SensorLogger implements SensorEventListener2 {
         _triggerEventListener = new TriggerEventListener() {
             @Override
             public void onTrigger(TriggerEvent triggerEvent) {
-                   new TriggerEventLoggerTask().execute(triggerEvent);
+                   new TriggerEventLoggerTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, triggerEvent);
             }
         };
 
@@ -336,6 +337,8 @@ public class SensorLogger implements SensorEventListener2 {
     }
 
     // TODO: Move to LogFileWriter
+    // This stuff seems to be deprecated in API level 30 -- and they recommend using
+    // Executors instead.  That'll be for another implementation, another time.
     private class TriggerEventLoggerTask extends AsyncTask<TriggerEvent, Void, Void>
     {
         @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
