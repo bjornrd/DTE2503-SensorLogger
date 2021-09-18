@@ -21,6 +21,7 @@ import com.bear.sensordatalogger.R;
 import com.bear.sensordatalogger.SensorLogger;
 import com.bear.sensordatalogger.databinding.SettingsFragmentBinding;
 import com.bear.sensordatalogger.ui.SettingsViewModel;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.EnumSet;
 
@@ -85,8 +86,8 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public EnumSet<SensorType> getSensorType()
     {
-        Switch stba_switch = (Switch) requireView().findViewById(R.id.sensorTypeBaseSwitch);
-        Switch stco_switch = (Switch) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
+        SwitchMaterial stba_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeBaseSwitch);
+        SwitchMaterial stco_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
 
         SwitchChecker<SensorType> switchChecker = () -> {
             EnumSet<SensorType> reportingMode = EnumSet.noneOf(SensorType.class);
@@ -106,10 +107,10 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public EnumSet<ReportingMode> getReportingMode()
     {
-        Switch scor_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
-        Switch socr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
-        Switch sosr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
-        Switch sspr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
+        SwitchMaterial scor_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
+        SwitchMaterial socr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
+        SwitchMaterial sosr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
+        SwitchMaterial sspr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
 
         SwitchChecker<ReportingMode> switchChecker = () -> {
             EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
@@ -135,7 +136,7 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public Boolean getUseLowPowerMode()
     {
-        Switch lowPowerModeSwitch = (Switch) requireView().findViewById(R.id.lowPowerModeSwitch);
+        SwitchMaterial lowPowerModeSwitch = (SwitchMaterial) requireView().findViewById(R.id.lowPowerModeSwitch);
         return lowPowerModeSwitch.isChecked();
     }
 
@@ -163,8 +164,8 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorTypeListeners()
     {
-        Switch stba_switch = (Switch) requireView().findViewById(R.id.sensorTypeBaseSwitch);
-        Switch stco_switch = (Switch) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
+        SwitchMaterial stba_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeBaseSwitch);
+        SwitchMaterial stco_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
 
         stba_switch.setOnCheckedChangeListener((compoundButton, b) -> _viewModel.getSensorType().setValue(getSensorType()));
         stco_switch.setOnCheckedChangeListener((compoundButton, b) -> _viewModel.getSensorType().setValue(getSensorType()));
@@ -173,10 +174,10 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorReportingModeListener()
     {
-        Switch scor_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
-        Switch socr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
-        Switch sosr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
-        Switch sspr_switch = (Switch) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
+        SwitchMaterial scor_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
+        SwitchMaterial socr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
+        SwitchMaterial sosr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
+        SwitchMaterial sspr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
 
         scor_switch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getReportingMode().setValue(getReportingMode()) );
         socr_switch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getReportingMode().setValue(getReportingMode()) );
@@ -187,7 +188,7 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorLowPowerModeListener()
     {
-        Switch lowPowerModeSwitch = (Switch) requireView().findViewById(R.id.lowPowerModeSwitch);
+        SwitchMaterial lowPowerModeSwitch = (SwitchMaterial) requireView().findViewById(R.id.lowPowerModeSwitch);
 
         lowPowerModeSwitch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getUseLowPowerMode().setValue(lowPowerModeSwitch.isChecked()));
     }

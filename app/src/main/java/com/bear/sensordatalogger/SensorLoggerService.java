@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.bear.sensordatalogger.SensorLogger.ReportingMode;
+import com.bear.sensordatalogger.SensorLogger.SensorType;
+
 import java.util.EnumSet;
 
 
@@ -51,8 +54,8 @@ public class SensorLoggerService extends Service {
         String fileName = (String) extras.get("fileName");
         Integer sensorDelay = (Integer) extras.get("delay");
         Integer sensorDelay_ms = (Integer) extras.get("delay_ms");
-        EnumSet<SensorLogger.SensorType> sensorTypes = (EnumSet<SensorLogger.SensorType>) extras.get("sensorTypes");
-        EnumSet<SensorLogger.ReportingMode> reportingModes = (EnumSet<SensorLogger.ReportingMode>) extras.get("reportingModes");
+        EnumSet<SensorType> sensorTypes = (EnumSet<SensorType>) extras.get("sensorTypes");
+        EnumSet<ReportingMode> reportingModes = (EnumSet<ReportingMode>) extras.get("reportingModes");
         Boolean lowPowerMode = (Boolean) extras.get("lowPowerMode");
 
         if(sensorDelay != null)
@@ -68,7 +71,7 @@ public class SensorLoggerService extends Service {
         if(sensorTypes != null && reportingModes == null)
             _logger.startLogger(fileName, sensorTypes);
         else if(sensorTypes == null && reportingModes != null)
-            _logger.startLogger(fileName, SensorLogger.SensorType.all, reportingModes);
+            _logger.startLogger(fileName, SensorType.all, reportingModes);
         else if (sensorTypes == null)
             _logger.startLogger(fileName);
         else

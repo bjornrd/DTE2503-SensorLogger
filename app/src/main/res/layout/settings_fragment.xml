@@ -79,14 +79,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Switch
+                    <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/lowPowerModeSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/lowPowerModeTextView"
-                        tools:ignore="UseSwitchCompatOrMaterialXml"
                         android:checked="@integer/sensor_low_power_mode_default_value"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -104,23 +103,22 @@
                     android:layout_height="32dp"
                     android:text="@string/sensor_type_options" />
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorTypeBaseSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_type_base_default_value"
                     android:minHeight="48dp"
                     android:text="@string/sensor_type_base"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    />
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorTypeCompoundSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_type_compound_default_value"
                     android:minHeight="48dp"
-                    android:text="@string/sensor_type_compound"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    android:text="@string/sensor_type_compound"/>
 
                 <Space
                     android:layout_width="match_parent"
@@ -132,41 +130,37 @@
                     android:layout_height="32dp"
                     android:text="@string/sensor_reporting_options" />
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorReportingModeContinuousSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_reporting_continuous_default_value"
                     android:minHeight="48dp"
-                    android:text="@string/sensor_reporting_mode_continuous"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    android:text="@string/sensor_reporting_mode_continuous"/>
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorReportingModeOnChangeSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_reporting_onChange_default_value"
                     android:minHeight="48dp"
-                    android:text="@string/sensor_reporting_mode_onChange"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    android:text="@string/sensor_reporting_mode_onChange"/>
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorReportingModeOneshotSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_reporting_oneShot_default_value"
                     android:minHeight="48dp"
-                    android:text="@string/sensor_reporting_mode_oneShot"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    android:text="@string/sensor_reporting_mode_oneShot"/>
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/sensorReportingModeSpecialSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="@integer/sensor_reporting_special_default_value"
                     android:minHeight="48dp"
-                    android:text="@string/sensor_reporting_mode_special"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    android:text="@string/sensor_reporting_mode_special"/>
 
 
             </LinearLayout>
