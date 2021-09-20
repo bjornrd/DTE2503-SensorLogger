@@ -157,7 +157,8 @@ public class dashboard extends Fragment {
 
     private String getStorageDir()
     {
-        return requireActivity().getExternalFilesDir(null).getAbsolutePath();
+        String filesDir = requireActivity().getFilesDir().getAbsolutePath();
+        return requireActivity().getFilesDir().getAbsolutePath();
     }
 
     // https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android/5921190#5921190
