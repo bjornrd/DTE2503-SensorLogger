@@ -225,6 +225,9 @@ public class dashboard extends Fragment {
         int defaultLowPowerMode = _context.getResources().getInteger(R.integer.sensor_low_power_mode_default_value);
         _lowPowerMode = defaultLowPowerMode == 1;
 
+        int defaultLogToFile = _context.getResources().getInteger(R.integer.sensor_log_to_file_default_value);
+        _logToFile = defaultLogToFile == 1;
+
         _defaultsHaveBeenSet = true;
     }
 
