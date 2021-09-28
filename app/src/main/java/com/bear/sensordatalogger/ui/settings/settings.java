@@ -32,11 +32,6 @@ public class settings extends Fragment {
     private SettingsViewModel _viewModel;
     private SettingsFragmentBinding _binding;
 
-    // To avoid if-else hyperinflation in switch-isChecked() clauses.
-    private interface SwitchChecker<T extends Enum<T>> {
-        EnumSet<T> getSwitchStates();
-    }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -89,19 +84,15 @@ public class settings extends Fragment {
         SwitchMaterial stba_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeBaseSwitch);
         SwitchMaterial stco_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
 
-        SwitchChecker<SensorType> switchChecker = () -> {
-            EnumSet<SensorType> reportingMode = EnumSet.noneOf(SensorType.class);
+        EnumSet<SensorType> reportingMode = EnumSet.noneOf(SensorType.class);
 
-            if(stba_switch.isChecked())
-                reportingMode.add(SensorType.base);
+        if(stba_switch.isChecked())
+            reportingMode.add(SensorType.base);
 
-            if(stco_switch.isChecked())
-                reportingMode.add(SensorType.composite);
+        if(stco_switch.isChecked())
+            reportingMode.add(SensorType.composite);
 
-            return reportingMode;
-        };
-
-        return switchChecker.getSwitchStates();
+        return reportingMode;
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -112,25 +103,21 @@ public class settings extends Fragment {
         SwitchMaterial sosr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
         SwitchMaterial sspr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
 
-        SwitchChecker<ReportingMode> switchChecker = () -> {
-            EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
+        EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
 
-            if(scor_switch.isChecked())
-                reportingMode.add(ReportingMode.continuous);
+        if(scor_switch.isChecked())
+            reportingMode.add(ReportingMode.continuous);
 
-            if(socr_switch.isChecked())
-                reportingMode.add(ReportingMode.onChange);
+        if(socr_switch.isChecked())
+            reportingMode.add(ReportingMode.onChange);
 
-            if(sosr_switch.isChecked())
-                reportingMode.add(ReportingMode.oneShot);
+        if(sosr_switch.isChecked())
+            reportingMode.add(ReportingMode.oneShot);
 
-            if(sspr_switch.isChecked())
-                reportingMode.add(ReportingMode.special);
+        if(sspr_switch.isChecked())
+            reportingMode.add(ReportingMode.special);
 
-            return reportingMode;
-        };
-
-        return switchChecker.getSwitchStates();
+        return reportingMode;
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
