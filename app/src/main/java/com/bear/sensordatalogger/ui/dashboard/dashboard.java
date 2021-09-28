@@ -41,6 +41,7 @@ public class dashboard extends Fragment {
     EnumSet<SensorType>     _sensorType;
     EnumSet<ReportingMode>  _reportingMode;
     Boolean                 _lowPowerMode;
+    Boolean                 _logToFile;
 
     boolean _defaultsHaveBeenSet = false;
 
@@ -67,10 +68,14 @@ public class dashboard extends Fragment {
         final Observer<Boolean> sensorLowPowerModeObserver =
                 bool -> _lowPowerMode = _viewModel.getUseLowPowerMode().getValue();
 
+        final Observer<Boolean> logToFileObserver =
+                bool -> _logToFile = _viewModel.getLogToFile().getValue();
+
         _viewModel.getSensorDelay()    .observe(requireActivity(), sensorDelayObserver);
         _viewModel.getSensorType()     .observe(requireActivity(), sensorTypeObserver);
         _viewModel.getReportingMode()  .observe(requireActivity(), sensorReportingModeObserver);
         _viewModel.getUseLowPowerMode().observe(requireActivity(), sensorLowPowerModeObserver);
+        _viewModel.getLogToFile()      .observe(requireActivity(), logToFileObserver);
 
 
         return _binding.getRoot();
@@ -126,6 +131,7 @@ public class dashboard extends Fragment {
                     _loggerIntent.putExtra("sensorTypes",       _sensorType);
                     _loggerIntent.putExtra("reportingModes",    _reportingMode);
                     _loggerIntent.putExtra("lowPowerMode",      _lowPowerMode);
+                    _loggerIntent.putExtra("logToFile",         _logToFile);
 
                     _context.startForegroundService(_loggerIntent);
 

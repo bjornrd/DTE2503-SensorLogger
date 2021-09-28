@@ -37,6 +37,7 @@ public class SensorLogger implements SensorEventListener2 {
     private boolean             _lowPowerMode;
     private final int           TYPE_TILT_DETECTOR = 22;  // https://android.googlesource.com/platform/cts/+/master/tests/sensor/src/android/hardware/cts/SensorSupportTest.java : l127
     private TriggerEventListener _triggerEventListener;
+    private boolean             _logToFile;
 
 
     public enum ReportingMode
@@ -64,12 +65,16 @@ public class SensorLogger implements SensorEventListener2 {
         _sensorDelay = SensorManager.SENSOR_DELAY_NORMAL;
         _lowPowerMode = false;
         _isRecording = false;
+        _logToFile = false;
     }
 
     public void startLogger(String logFileName, EnumSet<SensorType> sensorType, EnumSet<ReportingMode> mode)
     {
         try {
-            _logManager = new LogFileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+            if(_logToFile)
+                _logManager = new LogFileWriter(new File(logFileName, "sensor_log_" + System.currentTimeMillis() + ".csv"));
+            else
+                _logManager = new FauxWriter();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -295,6 +300,16 @@ public class SensorLogger implements SensorEventListener2 {
     public void setLowPowerMode(boolean lowPowerMode)
     {
         _lowPowerMode = lowPowerMode;
+    }
+
+    public boolean logToFile()
+    {
+        return _logToFile;
+    }
+
+    public void setLogToFile(boolean logToFile)
+    {
+        _logToFile = logToFile;
     }
 
     // https://android.googlesource.com/platform/cts/+/master/tests/sensor/src/android/hardware/cts/SensorSupportTest.java

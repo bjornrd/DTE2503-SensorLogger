@@ -24,6 +24,9 @@ public class SettingsViewModel extends ViewModel{
     private final MutableLiveData<Boolean>
             _useLowPowerMode = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean>
+            _logToFile = new MutableLiveData<>();
+
 
     public MutableLiveData<Integer> getSensorDelay()
     {
@@ -43,6 +46,11 @@ public class SettingsViewModel extends ViewModel{
     public MutableLiveData<Boolean> getUseLowPowerMode()
     {
         return _useLowPowerMode;
+    }
+
+    public MutableLiveData<Boolean> getLogToFile()
+    {
+        return _logToFile;
     }
 
 }

@@ -147,6 +147,7 @@ public class settings extends Fragment {
         setUpSensorTypeListeners();
         setUpSensorReportingModeListener();
         setUpSensorLowPowerModeListener();
+        setUpSensorLogToFileListener();
     }
 
     private void setUpSensorDelayListeners() {
@@ -191,6 +192,13 @@ public class settings extends Fragment {
         SwitchMaterial lowPowerModeSwitch = (SwitchMaterial) requireView().findViewById(R.id.lowPowerModeSwitch);
 
         lowPowerModeSwitch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getUseLowPowerMode().setValue(lowPowerModeSwitch.isChecked()));
+    }
+
+    private void setUpSensorLogToFileListener()
+    {
+        SwitchMaterial logToFileSwitch = (SwitchMaterial) requireView().findViewById(R.id.logToFileSwitch);
+
+        logToFileSwitch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getLogToFile().setValue(logToFileSwitch.isChecked()));
     }
 
 

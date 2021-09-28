@@ -17,5 +17,7 @@
     <integer name="sensor_reporting_special_default_value">1</integer>
 
     <integer name="sensor_low_power_mode_default_value">0</integer>
+    <integer name="sensor_log_to_file_default_value">0</integer>
+
 
 </resources>

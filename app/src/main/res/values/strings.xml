@@ -25,4 +25,6 @@
     <string name="sensor_reporting_mode_oneShot">Oneshot</string>
     <string name="sensor_reporting_mode_special">Special</string>
 
+    <string name="sensor_log_to_file">Log To File</string>
+
 </resources>

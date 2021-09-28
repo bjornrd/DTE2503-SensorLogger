@@ -57,6 +57,7 @@ public class SensorLoggerService extends Service {
         EnumSet<SensorType> sensorTypes = (EnumSet<SensorType>) extras.get("sensorTypes");
         EnumSet<ReportingMode> reportingModes = (EnumSet<ReportingMode>) extras.get("reportingModes");
         Boolean lowPowerMode = (Boolean) extras.get("lowPowerMode");
+        Boolean logToFile = (Boolean) extras.get("logToFile");
 
         if(sensorDelay != null)
             _logger.setSensorDelay(sensorDelay); // Prioritize standard delay over custom delay
@@ -67,6 +68,9 @@ public class SensorLoggerService extends Service {
 
         if(lowPowerMode != null)
             _logger.setLowPowerMode(lowPowerMode);
+
+        if(logToFile != null)
+            _logger.setLogToFile(logToFile);
 
         if(sensorTypes != null && reportingModes == null)
             _logger.startLogger(fileName, sensorTypes);
