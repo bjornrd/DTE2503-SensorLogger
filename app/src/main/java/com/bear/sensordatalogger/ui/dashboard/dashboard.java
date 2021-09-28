@@ -89,7 +89,7 @@ public class dashboard extends Fragment {
 
         _loggerIntent = new Intent(_context, SensorLoggerService.class);
 
-        Button button = (Button) requireView().findViewById(R.id.recordButton);
+        Button button = requireView().findViewById(R.id.recordButton);
 
         if(isMyServiceRunning(SensorLoggerService.class))
             requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));
@@ -115,7 +115,7 @@ public class dashboard extends Fragment {
                     _context.stopService(_loggerIntent);
 
                     // Enable the settings/log-menu items when stopping the logger
-                    BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
+                    BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
 
                     requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(true));
                     requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.log_menu).setEnabled(true));
@@ -138,7 +138,7 @@ public class dashboard extends Fragment {
                     // Disable the settings/log-menu items when starting the logger --
                     // As we don't want the user to change settings mid-logging, thinking that
                     // the changes are applied on-the-fly (as they're not).
-                    BottomNavigationView navView = (BottomNavigationView) requireActivity().findViewById(R.id.nav_view);
+                    BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
 
                     requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.settings_menu).setEnabled(false));
                     requireActivity().runOnUiThread(() -> navView.getMenu().findItem(R.id.log_menu).setEnabled(false));

@@ -57,10 +57,10 @@ public class settings extends Fragment {
     }
 
     public Integer getSensorDelay() {
-        RadioButton sdno_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayNormalRadioButton);
-        RadioButton sdui_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayUIRadioButton);
-        RadioButton sdga_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayGameRadioButton);
-        RadioButton sdfa_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayFastestRadioButton);
+        RadioButton sdno_rad_button = requireView().findViewById(R.id.sensorDelayNormalRadioButton);
+        RadioButton sdui_rad_button = requireView().findViewById(R.id.sensorDelayUIRadioButton);
+        RadioButton sdga_rad_button = requireView().findViewById(R.id.sensorDelayGameRadioButton);
+        RadioButton sdfa_rad_button = requireView().findViewById(R.id.sensorDelayFastestRadioButton);
 
         if (sdno_rad_button.isChecked())
             return SensorManager.SENSOR_DELAY_NORMAL;
@@ -81,8 +81,8 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public EnumSet<SensorType> getSensorType()
     {
-        SwitchMaterial stba_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeBaseSwitch);
-        SwitchMaterial stco_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
+        SwitchMaterial stba_switch = requireView().findViewById(R.id.sensorTypeBaseSwitch);
+        SwitchMaterial stco_switch = requireView().findViewById(R.id.sensorTypeCompoundSwitch);
 
         EnumSet<SensorType> reportingMode = EnumSet.noneOf(SensorType.class);
 
@@ -98,10 +98,10 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public EnumSet<ReportingMode> getReportingMode()
     {
-        SwitchMaterial scor_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
-        SwitchMaterial socr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
-        SwitchMaterial sosr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
-        SwitchMaterial sspr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
+        SwitchMaterial scor_switch = requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
+        SwitchMaterial socr_switch = requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
+        SwitchMaterial sosr_switch = requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
+        SwitchMaterial sspr_switch = requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
 
         EnumSet<ReportingMode> reportingMode = EnumSet.noneOf(ReportingMode.class);
 
@@ -123,7 +123,7 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public Boolean getUseLowPowerMode()
     {
-        SwitchMaterial lowPowerModeSwitch = (SwitchMaterial) requireView().findViewById(R.id.lowPowerModeSwitch);
+        SwitchMaterial lowPowerModeSwitch = requireView().findViewById(R.id.lowPowerModeSwitch);
         return lowPowerModeSwitch.isChecked();
     }
 
@@ -138,10 +138,10 @@ public class settings extends Fragment {
     }
 
     private void setUpSensorDelayListeners() {
-        RadioButton sdno_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayNormalRadioButton);
-        RadioButton sdui_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayUIRadioButton);
-        RadioButton sdga_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayGameRadioButton);
-        RadioButton sdfa_rad_button = (RadioButton) requireView().findViewById(R.id.sensorDelayFastestRadioButton);
+        RadioButton sdno_rad_button = requireView().findViewById(R.id.sensorDelayNormalRadioButton);
+        RadioButton sdui_rad_button = requireView().findViewById(R.id.sensorDelayUIRadioButton);
+        RadioButton sdga_rad_button = requireView().findViewById(R.id.sensorDelayGameRadioButton);
+        RadioButton sdfa_rad_button = requireView().findViewById(R.id.sensorDelayFastestRadioButton);
 
         sdno_rad_button.setOnClickListener(view -> _viewModel.getSensorDelay().setValue(SensorManager.SENSOR_DELAY_NORMAL));
         sdui_rad_button.setOnClickListener(view -> _viewModel.getSensorDelay().setValue(SensorManager.SENSOR_DELAY_UI));
@@ -152,8 +152,8 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorTypeListeners()
     {
-        SwitchMaterial stba_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeBaseSwitch);
-        SwitchMaterial stco_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorTypeCompoundSwitch);
+        SwitchMaterial stba_switch = requireView().findViewById(R.id.sensorTypeBaseSwitch);
+        SwitchMaterial stco_switch = requireView().findViewById(R.id.sensorTypeCompoundSwitch);
 
         stba_switch.setOnCheckedChangeListener((compoundButton, b) -> _viewModel.getSensorType().setValue(getSensorType()));
         stco_switch.setOnCheckedChangeListener((compoundButton, b) -> _viewModel.getSensorType().setValue(getSensorType()));
@@ -162,10 +162,10 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorReportingModeListener()
     {
-        SwitchMaterial scor_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
-        SwitchMaterial socr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
-        SwitchMaterial sosr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
-        SwitchMaterial sspr_switch = (SwitchMaterial) requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
+        SwitchMaterial scor_switch = requireView().findViewById(R.id.sensorReportingModeContinuousSwitch);
+        SwitchMaterial socr_switch = requireView().findViewById(R.id.sensorReportingModeOnChangeSwitch);
+        SwitchMaterial sosr_switch = requireView().findViewById(R.id.sensorReportingModeOneshotSwitch);
+        SwitchMaterial sspr_switch = requireView().findViewById(R.id.sensorReportingModeSpecialSwitch);
 
         scor_switch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getReportingMode().setValue(getReportingMode()) );
         socr_switch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getReportingMode().setValue(getReportingMode()) );
@@ -176,14 +176,14 @@ public class settings extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void setUpSensorLowPowerModeListener()
     {
-        SwitchMaterial lowPowerModeSwitch = (SwitchMaterial) requireView().findViewById(R.id.lowPowerModeSwitch);
+        SwitchMaterial lowPowerModeSwitch = requireView().findViewById(R.id.lowPowerModeSwitch);
 
         lowPowerModeSwitch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getUseLowPowerMode().setValue(lowPowerModeSwitch.isChecked()));
     }
 
     private void setUpSensorLogToFileListener()
     {
-        SwitchMaterial logToFileSwitch = (SwitchMaterial) requireView().findViewById(R.id.logToFileSwitch);
+        SwitchMaterial logToFileSwitch = requireView().findViewById(R.id.logToFileSwitch);
 
         logToFileSwitch.setOnCheckedChangeListener( (compoundButton, b) -> _viewModel.getLogToFile().setValue(logToFileSwitch.isChecked()));
     }
