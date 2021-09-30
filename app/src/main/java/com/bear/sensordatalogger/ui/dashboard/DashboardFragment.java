@@ -28,7 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.EnumSet;
 
-public class dashboard extends Fragment {
+public class DashboardFragment extends Fragment {
 
     private SettingsViewModel _viewModel;
     private DashboardFragmentBinding _binding;
@@ -89,7 +89,8 @@ public class dashboard extends Fragment {
 
         _loggerIntent = new Intent(_context, SensorLoggerService.class);
 
-        Button button = requireView().findViewById(R.id.recordButton);
+//        Button button = requireView().findViewById(R.id.recordButton);
+        Button button = _binding.recordButton;
 
         if(isMyServiceRunning(SensorLoggerService.class))
             requireActivity().runOnUiThread(() -> button.setText(getString(R.string.stop_recording)));

@@ -27,7 +27,7 @@ import java.util.EnumSet;
 
 import kotlin.Function;
 
-public class settings extends Fragment {
+public class SettingsFragment extends Fragment {
 
     private SettingsViewModel _viewModel;
     private SettingsFragmentBinding _binding;

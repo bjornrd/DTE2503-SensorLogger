@@ -1,19 +1,15 @@
 package com.bear.sensordatalogger;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bear.sensordatalogger.databinding.ActivityMainBinding;
-import com.bear.sensordatalogger.ui.dashboard.dashboard;
-import com.bear.sensordatalogger.ui.log.log;
-import com.bear.sensordatalogger.ui.settings.settings;
+import com.bear.sensordatalogger.ui.dashboard.DashboardFragment;
+import com.bear.sensordatalogger.ui.pendulum.PendulumFragment;
+import com.bear.sensordatalogger.ui.settings.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -22,9 +18,9 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     private ActivityMainBinding _binding;
 
-    dashboard dashboardFragment = new dashboard();
-    log logFragment = new log();
-    settings settingsFragment = new settings();
+    DashboardFragment dashboardFragment = new DashboardFragment();
+    PendulumFragment logFragment = new PendulumFragment();
+    SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

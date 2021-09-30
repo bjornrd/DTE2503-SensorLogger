@@ -8,21 +8,21 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.bear.sensordatalogger.ui.dashboard.dashboard"
+        android:name="com.bear.sensordatalogger.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/dashboard_fragment" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.bear.sensordatalogger.ui.settings.settings"
+        android:name="com.bear.sensordatalogger.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/settings_fragment" />
 
     <fragment
         android:id="@+id/navigation_log"
-        android:name="com.bear.sensordatalogger.ui.log.log"
+        android:name="com.bear.sensordatalogger.ui.pendulum.PendulumFragment"
         android:label="@string/title_log"
-        tools:layout="@layout/log_fragment" />
+        tools:layout="@layout/pendulum_fragment" />
 
 
 </navigation>

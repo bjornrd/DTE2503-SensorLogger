@@ -38,6 +38,7 @@ public class SensorLogger implements SensorEventListener2 {
     private final int           TYPE_TILT_DETECTOR = 22;  // https://android.googlesource.com/platform/cts/+/master/tests/sensor/src/android/hardware/cts/SensorSupportTest.java : l127
     private TriggerEventListener _triggerEventListener;
     private boolean             _logToFile;
+    private SensorModel         _viewModel;
 
 
     public enum ReportingMode
