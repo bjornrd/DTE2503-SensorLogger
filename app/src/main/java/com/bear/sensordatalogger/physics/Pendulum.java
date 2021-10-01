@@ -8,17 +8,21 @@ import java.util.List;
 
 public class Pendulum {
 
-
-
     private Coordinate _hangPoint;
     private Coordinate _centerOfGravity;
-    double _radius;
-    double _lineLength;
-    double _mass;
+    private double _radius;
+    private double _lineLength;
+    private double _mass;
+    private boolean _isTethered;
 
-    double _theta; // radians
-    double _dampening;
-    double _velocity;
+    private double _theta; // radians
+    private double _dampening;
+    private double _velocity;
+
+    private double _v0x;
+    private double _v0y;
+    private double _vx;
+    private double _vy;
 
     public Pendulum(Coordinate pendulumCenter, Coordinate hangPoint, double lineLength, double radius, double mass, double dampening)
     {
@@ -31,7 +35,14 @@ public class Pendulum {
         _dampening = dampening;
         _velocity = 0.0;
 
+        _isTethered = true; // Always start off tethered to line
+
         _theta = calculateTheta();
+
+        _v0x = 0;
+        _v0y = 0;
+        _vx = 0;
+        _vy = 0;
     }
 
     private double calculateTheta()
@@ -54,21 +65,30 @@ public class Pendulum {
 
     public void calculateNextPosition(List<Force> forces, double dt)
     {
-        // Calculation from:
-        // https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-oscillations/a/trig-and-forces-the-pendulum
-        Force force = combineForces(forces);
+        if(_isTethered) {
+            // Calculation from:
+            // https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-oscillations/a/trig-and-forces-the-pendulum
+            Force force = combineForces(forces);
 
-        // Angular acceleration
-        double alpha =( -force.Fy * Math.sin(_theta) +
-                        force.Fx * Math.cos(_theta) )/_lineLength*dt ;
+            // Angular acceleration
+            double alpha = (-force.Fy * Math.sin(_theta) +
+                    force.Fx * Math.cos(_theta)) / _lineLength * dt;
 
-        _velocity += alpha;
-        _velocity *= _dampening;
-        _theta += _velocity;
+            _velocity += alpha;
+            _velocity *= _dampening;
+            _theta += _velocity;
 
-        _centerOfGravity.x = _lineLength*Math.sin(_theta);
-        _centerOfGravity.y = -_lineLength*Math.cos(_theta);
+            _centerOfGravity.x = _lineLength * Math.sin(_theta);
+            _centerOfGravity.y = -_lineLength * Math.cos(_theta);
 
+        } else {
+            _vy += -0.5*(-9.81/*gravity*/)*dt;
+
+            // Bluntly ignoring any air resistance in my phone
+            _centerOfGravity.y += _vy;
+            _centerOfGravity.x += _vx;
+
+        }
     }
 
     public void setXPos(double x)
@@ -128,6 +148,27 @@ public class Pendulum {
     public double lineLength()
     {
         return _lineLength;
+    }
+
+    public void release()
+    {
+        _isTethered = false;
+
+        _v0x = _velocity * _lineLength * Math.cos(_theta);
+        _v0y = _velocity * _lineLength * Math.sin(_theta);
+
+        _vx = _v0x;
+        _vy = _v0y;
+    }
+
+    public boolean isTethered()
+    {
+        return _isTethered;
+    }
+
+    public void setDampening(double dampening)
+    {
+        _dampening = dampening;
     }
 
 }

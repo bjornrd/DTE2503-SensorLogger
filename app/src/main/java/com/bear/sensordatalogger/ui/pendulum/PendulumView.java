@@ -8,19 +8,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bear.sensordatalogger.databinding.PendulumFragmentBinding;
 import com.bear.sensordatalogger.physics.Coordinate;
 import com.bear.sensordatalogger.physics.Force;
 import com.bear.sensordatalogger.physics.Pendulum;
-import com.bear.sensordatalogger.physics.Pendulum.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +35,8 @@ public class PendulumView extends View {
     Paint paintCircle, paintThread;
     Path pathThread,pathHolder;
 
-    int circle_x;
-    int circle_y;
+    int pendulum_x;
+    int pendulum_y;
 
     public PendulumView(Context context)
     {
@@ -60,8 +55,6 @@ public class PendulumView extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
-
-
 
     @SuppressLint("DrawAllocation")
     @Override
@@ -107,17 +100,17 @@ public class PendulumView extends View {
         canvas.drawPath(pathThread, paintThread);
         canvas.drawPath(pathHolder, paintThread);
 
-        canvas.drawCircle(circle_x, circle_y, (int)_pendulum.radius(), paintCircle);
+        canvas.drawCircle(pendulum_x, pendulum_y, (int)_pendulum.radius(), paintCircle);
         canvas.drawCircle(xCenter, yCenter, 5, paintCircle);
 
         _pendulum.calculateNextPosition(_forces, 0.1);
         Coordinate position = _pendulum.getPos();
         Coordinate hangPoint = _pendulum.getHangPoint();
-        circle_x = (int)position.x + (int)hangPoint.x;
-        circle_y = (int)position.y + (int)hangPoint.y;
+        pendulum_x = (int)position.x + (int)hangPoint.x;
+        pendulum_y = (int)position.y + (int)hangPoint.y;
 
-        Log.i("Pendulum x-position: ", String.valueOf(circle_x));
-        Log.i("Pendulum y-position: ", String.valueOf(circle_y));
+        Log.i("Pendulum x-position: ", String.valueOf(pendulum_x));
+        Log.i("Pendulum y-position: ", String.valueOf(pendulum_y));
 
         Log.i("thread Line ", String.valueOf(threadNewLine));
 
@@ -126,16 +119,22 @@ public class PendulumView extends View {
             if(force.identifier.equals("SomethingElse"))
             {
                 force.Fx *= 0.999;
+
+                if(Math.abs(force.Fx) < 9.2 && _pendulum.isTethered())
+                    _pendulum.release();
+
             }
         }
+
+
 
         invalidate();
     }
 
     public void init()
     {
-        _pendulum = new Pendulum(new Coordinate(Coordinate.Dimension.TwoD, 980, 0.0, 0.0),
-                                 new Coordinate(Coordinate.Dimension.TwoD, (float)getWidth()/2.0, 0.0, 0.0),
+        _pendulum = new Pendulum(new Coordinate(Coordinate.Dimension.TwoD, 980, 0.0),
+                                 new Coordinate(Coordinate.Dimension.TwoD, (float)getWidth()/2.0, 0.0),
                                  300, 15, 1, 0.98);
 
         _forces = new ArrayList<>();
@@ -144,7 +143,12 @@ public class PendulumView extends View {
 
         Coordinate position = _pendulum.getPos();
 
-        circle_x = (int)position.x;
-        circle_y = (int)position.y;
+        pendulum_x = (int)position.x;
+        pendulum_y = (int)position.y;
+    }
+
+    public void releasePendulum()
+    {
+        _pendulum.release();
     }
 }
