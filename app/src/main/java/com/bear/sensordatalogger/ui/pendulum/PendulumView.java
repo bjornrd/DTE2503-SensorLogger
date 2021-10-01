@@ -1,5 +1,6 @@
 package com.bear.sensordatalogger.ui.pendulum;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,52 +17,64 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bear.sensordatalogger.databinding.PendulumFragmentBinding;
+import com.bear.sensordatalogger.physics.Coordinate;
+import com.bear.sensordatalogger.physics.Force;
+import com.bear.sensordatalogger.physics.Pendulum;
+import com.bear.sensordatalogger.physics.Pendulum.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // Inspired by:
 // https://github.com/enyason/Simple_Pendulum_Demonstration/blob/master/app/src/main/java/com/nexdev/enyason/simple_pendulum_demonstration/PendulumView.java
 
-
+// TODO: Implement timer (or class) to control how often we refresh the pendulum position
+//
 public class PendulumView extends View {
 
     private PendulumViewModel _viewModel;
     private PendulumFragmentBinding _binding;
-    private Canvas _canvas;
+    private Pendulum _pendulum;
+    private List<Force> _forces;
 
     Paint paintCircle, paintThread;
     Path pathThread,pathHolder;
 
-    float circlePositionX = 0;
-    float threadPositionX = 0;
-
-    int x_dir;
-    int y_dir;
-
-    double thread_x_dir;
     int circle_x;
-    double thread_x;
+    int circle_y;
 
     public PendulumView(Context context)
     {
         super(context);
+        init();
     }
 
     public PendulumView(Context context, @Nullable AttributeSet attrs)
     {
         super(context, attrs);
+        init();
     }
 
     public PendulumView(Context context, @Nullable AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
+
+
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
 
+
         int xCenter = getWidth() / 2;
-        int yCenter = getWidth() / 2;
+        int yCenter = getHeight() / 2;
+
+        _pendulum.setHangpoint(new Coordinate(Coordinate.Dimension.TwoD,xCenter , yCenter ,0));
+        _pendulum.setLineLength(Math.min(xCenter, yCenter)-50);
 
         float boundaryRight = xCenter + 200;
         float boundaryLeft = xCenter - 200;
@@ -75,14 +88,11 @@ public class PendulumView extends View {
         pathThread = new Path();
         pathHolder = new Path();
 
-        float threadNewLine = xCenter + threadPositionX;
-
+        float threadNewLine = xCenter + (float)(_pendulum.getHangPoint().x);
 
         //build paint for the circle
         paintCircle.setStyle(Paint.Style.FILL);
         paintCircle.setColor(Color.BLACK);
-//        paintCircle.setStrokeWidth(5);
-
 
         //build paint for the thread
         paintThread.setColor(Color.BLACK);
@@ -90,72 +100,51 @@ public class PendulumView extends View {
         paintThread.setStrokeWidth(3);
 
 
-        pathHolder.moveTo(xCenter,100);
-        pathHolder.lineTo(300,100);
-
-        pathHolder.moveTo(300,100);
-        pathHolder.lineTo(300,50);
-
-        pathHolder.moveTo(300,50);
-        pathHolder.lineTo(420,50);
-
-        pathHolder.moveTo(420,50);
-        pathHolder.lineTo(420,100);
-
-        pathHolder.moveTo(420,100);
-        pathHolder.lineTo(xCenter,100);
-
         //build path for the thread
-        pathThread.moveTo(xCenter, 100);
-        pathThread.lineTo((float) thread_x, 350);
-
+        pathThread.moveTo((int)(_pendulum.getHangPoint().x), (int)(_pendulum.getHangPoint().y));
+        pathThread.lineTo((int)(_pendulum.getPos().x + _pendulum.getHangPoint().x) , (int)(_pendulum.getPos().y + _pendulum.getHangPoint().y));
 
         canvas.drawPath(pathThread, paintThread);
-        canvas.drawPath(pathHolder,paintThread);
+        canvas.drawPath(pathHolder, paintThread);
 
-        canvas.drawCircle(circle_x, 370, 30, paintCircle);
-        canvas.drawCircle(xCenter, 100, 5, paintCircle);
+        canvas.drawCircle(circle_x, circle_y, (int)_pendulum.radius(), paintCircle);
+        canvas.drawCircle(xCenter, yCenter, 5, paintCircle);
 
+        _pendulum.calculateNextPosition(_forces, 0.1);
+        Coordinate position = _pendulum.getPos();
+        Coordinate hangPoint = _pendulum.getHangPoint();
+        circle_x = (int)position.x + (int)hangPoint.x;
+        circle_y = (int)position.y + (int)hangPoint.y;
 
-        if (circle_x >= boundaryRight) {
-            x_dir -= 5;
-        }
-
-
-        if (circle_x <= boundaryLeft) {
-            x_dir += 5;
-        }
-
-        circle_x = circle_x + x_dir;
-        thread_x = thread_x + x_dir;
+        Log.i("Pendulum x-position: ", String.valueOf(circle_x));
+        Log.i("Pendulum y-position: ", String.valueOf(circle_y));
 
         Log.i("thread Line ", String.valueOf(threadNewLine));
+
+        for(Force force : _forces)
+        {
+            if(force.identifier.equals("SomethingElse"))
+            {
+                force.Fx *= 0.999;
+            }
+        }
 
         invalidate();
     }
 
     public void init()
     {
-        x_dir = 5;
-        thread_x_dir = 9.5;
+        _pendulum = new Pendulum(new Coordinate(Coordinate.Dimension.TwoD, 980, 0.0, 0.0),
+                                 new Coordinate(Coordinate.Dimension.TwoD, (float)getWidth()/2.0, 0.0, 0.0),
+                                 300, 15, 1, 0.98);
 
-        circle_x = 360;
-        thread_x = 360;
+        _forces = new ArrayList<>();
+        _forces.add(new Force(0, -9.81, 0.0, _pendulum.mass(), "Gravity"));
+        _forces.add(new Force(-9.81, 0, 0, _pendulum.mass(), "SomethingElse"));
+
+        Coordinate position = _pendulum.getPos();
+
+        circle_x = (int)position.x;
+        circle_y = (int)position.y;
     }
-
-
-    private class Pendulum
-    {
-        public float circlePositionX = 0;
-        float threadPositionX = 0;
-
-        int x_dir;
-        int y_dir;
-
-        double thread_x_dir;
-        int circle_x;
-        double thread_x;
-    }
-
-
 }

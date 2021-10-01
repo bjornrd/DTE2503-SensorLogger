@@ -37,6 +37,7 @@ public class PendulumFragment extends Fragment {
 //
 //        final View view = _binding.pendulumView;
 //
+
         return _binding.getRoot();
     }
 
